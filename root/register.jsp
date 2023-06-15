@@ -26,11 +26,17 @@ if (request.getMethod().equals("POST") && username != null) {
 		result = "You must supply a password of at least 5 characters.";
 
 	} else if (password1.equals(password2)) {
-		Statement stmt = conn.createStatement();
+		
 		ResultSet rs = null;
 		try {
-			stmt.executeQuery("INSERT INTO Users (name, type, password) VALUES ('" + username + "', 'USER', '" + password1 + "')");
-			rs = stmt.executeQuery("SELECT * FROM Users WHERE (name = '" + username + "' AND password = '" + password1 + "')");
+			PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO Users (name, type, password) VALUES ('?', 'USER', '?')");
+			insertStatement.setString(1, username);
+			insertStatement.setString(2, password1);
+			insertStatement.execute();
+			PreparedStatement selectStatement = connection.prepareStatement("SELECT * FROM Users WHERE (name = '?' AND password = '?')");
+			selectStatement.setString(1, username);
+			selectStatement.setString(2, password1);
+			rs = selectStatement.execute();
 			rs.next();
 			userid =  "" + rs.getInt("userid"); 
 
