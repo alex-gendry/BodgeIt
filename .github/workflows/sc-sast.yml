@@ -54,8 +54,6 @@ jobs:
       - name: Package Sources
         run: |
           scancentral package $BUILD_OPTS -o package.zip
-          mvn dependency:tree -DoutputFile=.debricked-maven-dependencies.tgf -DoutputType=tgf
-          zip -r package.zip .debricked-maven-dependencies.tgf
 
       # Run Scan
       - name: Run Scan
