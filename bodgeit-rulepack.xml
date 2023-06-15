@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RulePack xmlns="xmlns://www.fortifysoftware.com/schema/rules"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="RulePack">
+    <RulePackID>9B1B79DC-395D-49D3-B893-49E8F56F0417</RulePackID>
+    <SKU>SKU-9B1B79DC-395D-49D3-B893-49E8F56F0417</SKU>
+    <Name><![CDATA[bodgeit-rulepack.xml]]></Name>
+    <Version>1.0</Version>
+    <Description><![CDATA[Description for bodgeit-rulepack.xml]]></Description>
+    <Rules version="20.1">
+        <RuleDefinitions>
+        </RuleDefinitions>
+    </Rules>
+</RulePack>
