@@ -1,0 +1,4 @@
+build/*
+fortify/*
+
+!build/WEB-INF/classes/.gitkeep
