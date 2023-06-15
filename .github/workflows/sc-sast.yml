@@ -56,15 +56,12 @@ jobs:
           scancentral package $BUILD_OPTS -o package.zip
 
       # Run Scan
-      - name: Fortify ScanCentral Scan
-        # You may pin to the exact commit or the version.
-        # uses: fortify/gha-setup-scancentral-client@906d5cb5d8765c2e86e1ae7d32cd7b4bf45103f2
-        uses: fortify/gha-setup-scancentral-client@v1.2.0
-        with:
-          # Fortify ScanCentral Client version to use
-          version: 22.2
-          # ScanCentral client authentication token
-          client-auth-token: $CLIENT_AUTH_TOKEN
+      - name: Run Scan
+        run: fcli sc-sast scan start -p package.zip --sensor-version 22.2 --appversion ${APPLICATION}:${VERSION} --store '?'
+
+      # Wait for SAST scan to complete
+      - name: Wait for Scan Completion
+        run: fcli sc-sast scan wait-for '?' -i 30s
 
       - name: Export Fortify vulnerability data
         uses: fortify/gha-export-vulnerabilities@v1.0.0
