@@ -51,9 +51,10 @@ jobs:
       - name : Settings from Base Settings
         if: ${{ env.BASE_SETTINGS }}
         run: |
+          set -x
           uri="/api/v2/base-scan-settings/$(fcli sc-dast rest call /api/v2/base-scan-settings/scan-settings-summary-list?searchText="$BASE_SETTINGS" -o expr={items[0].id})"
           basescansettings=$(fcli sc-dast rest call $uri)
-          body="{${basescansettings:4:-4},\"applicationVersionId\": \"$(fcli ssc appversion get $APPLICATION:$VERSION -o expr={id})\",\"name\": \"${APPLICATION}-${VERSION}-${SHA}\",\"scanType\": 1 }"
+          body="{${basescansettings:4:-4},\"applicationVersionId\": \"$(fcli ssc appversion get ${APPLICATION}:${VERSION} -o expr={id})\",\"name\": \"${APPLICATION}-${VERSION}-${SHA}\",\"scanType\": 1 }"
           cicdToken=$(fcli sc-dast rest call /api/v2/application-version-scan-settings -d "$body" -X POST  -o expr={cicdToken})
           echo "SCDAST_SETTINGS=$(echo $cicdToken)" >> $GITHUB_ENV
           
