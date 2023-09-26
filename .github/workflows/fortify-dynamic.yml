@@ -20,8 +20,8 @@ jobs:
       SHA: "${{ github.run_id }}"
       VERSION: "${{ github.ref_name }}"
       # Choose one of the two following
-      SCDAST_SETTINGS: ""
-      BASE_SETTINGS: "BodgeIt[Std][NoAuth]"
+      SCDAST_SETTINGS: "6729c7ad-6240-4b0c-8945-9e2bec00c6f9"
+      BASE_SETTINGS: "BodgeIt[Std][Auth][SVC]"
       # 
       WAIT: false
       DELETE_SETTINGS: true
@@ -90,7 +90,7 @@ jobs:
         if: ${{ env.BASE_SETTINGS }}
         continue-on-error: true
         run: |
-          result=$(fcli sc-dast rest call /api/v2/application-version-scan-settings/$(fcli config var contents get scansettings -o expr={id}) -X DELETE)
+          fcli sc-dast rest call /api/v2/application-version-scan-settings/$(fcli config var contents get scansettings -o expr={id}) -X DELETE 2>&1 /dev/null
 
           echo "Scan Settings $SCDAST_SETTINGS deleted"
 
