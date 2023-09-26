@@ -49,7 +49,7 @@ jobs:
           fcli ssc appversion create $APPLICATION:$VERSION --auto-required-attrs --skip-if-exists
 
       # Create Scan Settings from Base Settings
-      - name : Settings from Base Settings
+      - name : Create Settings from Base Settings
         if: ${{ env.BASE_SETTINGS }}
         run: |
           # Fetch Base Scan Settings
@@ -88,11 +88,11 @@ jobs:
         run: fcli sc-dast scan wait-for -u=Complete '{?dastscan:id}'  -i 30s
 
       # Cleanup Scan Settings made from Base Settings
-      - name : Settings from Base Settings
+      - name : Delete Settings from Base Settings
         if: ${{ env.BASE_SETTINGS }}
         continue-on-error: true
         run: |
-          res=$(fcli sc-dast rest call /api/v2/application-version-scan-settings/$(fcli config var contents get scansettings -o expr={id}) -X DELETE) 2>&1 /dev/null
+          res=$(fcli sc-dast rest call /api/v2/application-version-scan-settings/$(fcli config var contents get scansettings -o expr={id}) -X DELETE) 2>&1 null
 
           echo "Scan Settings $SCDAST_SETTINGS deleted"
 
