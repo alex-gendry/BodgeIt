@@ -70,6 +70,8 @@ jobs:
       
                 # Set SCDAST_SETTINGS env variable for whole job
                 echo "SCDAST_SETTINGS=$(echo $cicdToken)" >> $GITHUB_ENV
+
+                echo "Scan Settings created : $scansettingsname ($cicdToken)"
           fi
           
 
