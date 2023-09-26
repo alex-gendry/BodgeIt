@@ -1,0 +1,78 @@
+name: Fortify DAST Scan
+on:
+  workflow_dispatch:  
+  push:
+    # Master or main branch that you want to trigger this workflow for
+    branches: [7.0-gh-fortify]
+
+jobs:
+  Fortify-DAST:
+    # Use the appropriate runner for building your source code
+    runs-on: ubuntu-latest
+    container:
+      image: fortifydocker/fortify-ci-tools
+    env:
+      SSC_UPLOAD_TOKEN: ${{ secrets.SSC_UPLOAD_TOKEN }}
+      FTFY_SSC_URL: ${{ secrets.FTFY_SSC_URL }}
+      FTFY_CI_TOKEN_DEC: ${{ secrets.FTFY_CI_TOKEN_DEC }}
+      FTFY_CI_TOKEN_ENC: ${{ secrets.FTFY_CI_TOKEN_ENC }}
+      APPLICATION: "${{ github.event.repository.name }}"
+      SHA: "${{ github.run_id }}"
+      VERSION: "${{ github.ref_name }}"
+      # Choose one of the two following
+      SCDAST_SETTINGS: ""
+      BASE_SETTINGS: "BodgeIt[Std][NoAuth]"
+      # 
+      WAIT: true
+
+    steps:
+      # # Check out source code
+      # - name: Check Out Source Code
+      #   uses: actions/checkout@v2
+      #   with:
+      #     # Fetch at least the immediate parents so that if this is a pull request then we can checkout the head.
+      #     fetch-depth: 2
+      # # If this run was triggered by a pull request event, then checkout the head of the pull request instead of the merge commit.
+      # - run: git checkout HEAD^2
+      #   if: ${{ github.event_name == 'pull_request' }}
+
+      # Login
+      - name: Login to Fortify
+        run: |
+          fcli ssc session login --url $FTFY_SSC_URL -t $FTFY_CI_TOKEN_DEC
+          fcli sc-dast session login --ssc-url $FTFY_SSC_URL --ssc-ci-token $FTFY_CI_TOKEN_DEC
+
+      # Create Application Version
+      - name: Create Application Version
+        run: |
+          fcli ssc appversion create $APPLICATION:$VERSION --auto-required-attrs --skip-if-exists
+
+      # Create Scan Settings from Base Settings
+      - name : Settings from Base Settings
+        if: ${{ env.BASE_SETTINGS }}
+        run: |
+          uri="/api/v2/base-scan-settings/$(fcli sc-dast rest call /api/v2/base-scan-settings/scan-settings-summary-list?searchText="$BASE_SETTINGS" -o expr={items[0].id})"
+          basescansettings=$(fcli sc-dast rest call $uri)
+          body="{
+          ${basescansettings:4:-4},
+          \"applicationVersionId\": \"$(fcli ssc appversion get $APPLICATION:$VERSION -o expr={id})\",
+          \"name\": \"${APPLICATION}-${VERSION}-${SHA}\",
+          \"scanType\": 1
+          }"
+          cicdToken=$(fcli sc-dast rest call /api/v2/application-version-scan-settings -d "$body" -X POST  -o expr={cicdToken})
+          echo "SCDAST_SETTINGS=$(echo $cicdToken)" >> $GITHUB_ENV
+
+      # Run DAST Scan
+      - name: Run DAST Scan
+        run: fcli sc-dast scan start --settings=$SCDAST_SETTINGS --store dastscan "$APPLICATION-$VERSION-$SHA"
+
+      # Wait for DAST scan to complete
+      - name: Wait for DAST Scan Completion
+        if: ${{ env.WAIT }}
+        run: fcli sc-dast scan wait-for -u=Complete '{?dastscan:id}'  -i 30s
+
+      # Clean up tokens, session variables, ...
+      - name: Cleanup
+        run: |
+          fcli sc-dast session logout --no-revoke-token
+          fcli ssc session logout --no-revoke-token
