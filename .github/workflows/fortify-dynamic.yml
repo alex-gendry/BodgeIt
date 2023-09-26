@@ -54,7 +54,7 @@ jobs:
         run: |
           # Fetch Base Scan Settings
           uri="/api/v2/base-scan-settings/$(fcli sc-dast rest call /api/v2/base-scan-settings/scan-settings-summary-list?searchText="$BASE_SETTINGS" -o expr={items[0].id})"
-          basescansettings=$(fcli sc-dast rest call $uri)
+          basescansettings=$(fcli sc-dast rest call $uri --store basescansettings)
         
           if [ -z "$basescansettings" ]
           then
@@ -66,7 +66,7 @@ jobs:
                 scansettingsname=${APPLICATION}-${VERSION}-${SHA}
                 body="{$scansettings,\"applicationVersionId\": \"${applicationversionid}\",\"name\": \"$scansettingsname\",\"scanType\": 1 }"
                 # Create Scan Settings
-                cicdToken=$(fcli sc-dast rest call /api/v2/application-version-scan-settings -d "$body" -X POST  -o expr={cicdToken})
+                cicdToken=$(fcli sc-dast rest call /api/v2/application-version-scan-settings -d "$body" -X POST  -o expr={cicdToken} --store scansettings)
       
                 # Set SCDAST_SETTINGS env variable for whole job
                 echo "SCDAST_SETTINGS=$(echo $cicdToken)" >> $GITHUB_ENV
@@ -89,7 +89,7 @@ jobs:
       - name : Settings from Base Settings
         if: ${{ env.BASE_SETTINGS }}
         run: |
-          fcli sc-dast rest call /api/v2/application-version-scan-settings/$SCDAST_SETTINGS -X DELETE 
+          fcli sc-dast rest call '/api/v2/application-version-scan-settings/{?scansettings:id}' -X DELETE 
 
       # Clean up tokens, session variables, ...
       - name: Cleanup
