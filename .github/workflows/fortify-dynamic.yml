@@ -92,7 +92,7 @@ jobs:
         if: ${{ env.BASE_SETTINGS }}
         continue-on-error: true
         run: |
-          res=$(fcli sc-dast rest call /api/v2/application-version-scan-settings/$(fcli config var contents get scansettings -o expr={id}) -X DELETE) 2>&1 null
+          res=$(fcli sc-dast rest call /api/v2/application-version-scan-settings/$(fcli config var contents get scansettings -o expr={id}) -X DELETE) || true
 
           echo "Scan Settings $SCDAST_SETTINGS deleted"
 
