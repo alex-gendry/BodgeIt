@@ -88,7 +88,7 @@ jobs:
       # Cleanup Scan Settings made from Base Settings
       - name : Settings from Base Settings
         if: ${{ env.BASE_SETTINGS }}
-        allow-failure: true
+        continue-on-error: true
         run: |
           result=$(fcli sc-dast rest call /api/v2/application-version-scan-settings/$(fcli config var contents get scansettings -o expr={id}) -X DELETE)
 
