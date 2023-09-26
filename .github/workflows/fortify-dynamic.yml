@@ -58,7 +58,7 @@ jobs:
           applicationversionid=$(fcli ssc appversion get ${APPLICATION}:${VERSION} -o expr={id})
           scansettingsname=${APPLICATION}-${VERSION}-${SHA}
           body="{$scansettings,\"applicationVersionId\": \"${applicationversionid}\",\"name\": \"$scansettingsname\",\"scanType\": 1 }"
-          cicdToken=$(fcli sc-dast rest call /api/v2/application-version-scan-settings -d "$body" -X POST  -o expr={cicdToken})
+          cicdToken=$(fcli sc-dast rest call /api/v2/application-version-scan-settings -d \"$body\" -X POST  -o expr={cicdToken})
           echo "SCDAST_SETTINGS=$(echo $cicdToken)" >> $GITHUB_ENV
           
 
