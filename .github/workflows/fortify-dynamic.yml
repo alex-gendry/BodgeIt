@@ -22,7 +22,7 @@ jobs:
       SCDAST_SETTINGS: ""
       # 
       WAIT: false
-      DELETE_SETTINGS: true
+      DELETE_SETTINGS: false
       
     steps:
       # Login
