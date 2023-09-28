@@ -19,11 +19,11 @@ jobs:
       APPLICATION: "${{ github.event.repository.name }}"
       SHA: "${{ github.run_id }}"
       VERSION: "${{ github.ref_name }}"
-      # Choose one of the two following
-      SCDAST_SETTINGS: "43ab8848-c3c7-45ec-ae57-b86457ab1526"
-      BASE_SETTINGS: ""
+      # Choose one of the two following (default: BASE_SETTINGS)
+      BASE_SETTINGS: "BodgeIt[Std][Auth][SVC]"
+      SCDAST_SETTINGS: ""
       # 
-      WAIT: false
+      WAIT: true
       DELETE_SETTINGS: true
 
     steps:
