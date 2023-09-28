@@ -84,7 +84,7 @@ jobs:
 
       # Wait for DAST scan to complete
       - name: Wait for DAST Scan Completion
-        if: ${{ env.WAIT == true }}
+        if: ${{ env.WAIT }}
         run: fcli sc-dast scan wait-for -u=Complete '{?dastscan:id}'  -i 30s
 
       # Cleanup Scan Settings made from Base Settings
