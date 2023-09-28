@@ -12,9 +12,7 @@ jobs:
     container:
       image: fortifydocker/fortify-ci-tools
     env:
-      SSC_UPLOAD_TOKEN: ${{ secrets.SSC_UPLOAD_TOKEN }}
       FTFY_SSC_URL: ${{ secrets.FTFY_SSC_URL }}
-      FTFY_CI_TOKEN_DEC: ${{ secrets.FTFY_CI_TOKEN_DEC }}
       FTFY_CI_TOKEN_ENC: ${{ secrets.FTFY_CI_TOKEN_ENC }}
       APPLICATION: "${{ github.event.repository.name }}"
       SHA: "${{ github.run_id }}"
@@ -24,24 +22,14 @@ jobs:
       SCDAST_SETTINGS: ""
       # 
       WAIT: false
-      DELETE_SETTINGS: false
+      DELETE_SETTINGS: true
       
     steps:
-      # # Check out source code
-      # - name: Check Out Source Code
-      #   uses: actions/checkout@v2
-      #   with:
-      #     # Fetch at least the immediate parents so that if this is a pull request then we can checkout the head.
-      #     fetch-depth: 2
-      # # If this run was triggered by a pull request event, then checkout the head of the pull request instead of the merge commit.
-      # - run: git checkout HEAD^2
-      #   if: ${{ github.event_name == 'pull_request' }}
-
       # Login
       - name: Login to Fortify
         run: |
-          fcli ssc session login --url $FTFY_SSC_URL -t $FTFY_CI_TOKEN_DEC
-          fcli sc-dast session login --ssc-url $FTFY_SSC_URL --ssc-ci-token $FTFY_CI_TOKEN_DEC
+          fcli ssc session login --url $FTFY_SSC_URL -t $FTFY_CI_TOKEN_ENC
+          fcli sc-dast session login --ssc-url $FTFY_SSC_URL --ssc-ci-token $FTFY_CI_TOKEN_ENC
 
       # Create Application Version
       - name: Create Application Version
