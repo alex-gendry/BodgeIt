@@ -77,7 +77,7 @@ jobs:
 
       # Cleanup Scan Settings made from Base Settings
       - name : Delete Settings from Base Settings
-        if: ${{ env.BASE_SETTINGS }} && ${{ env.DELETE_SETTINGS == 'true' }}
+        if: ${{ env.BASE_SETTINGS && env.DELETE_SETTINGS == 'true' }}
         continue-on-error: true
         run: |
           res=$(fcli sc-dast rest call /api/v2/application-version-scan-settings/$(fcli config var contents get scansettings -o expr={id}) -X DELETE) || true
