@@ -20,8 +20,8 @@ jobs:
       SHA: "${{ github.run_id }}"
       VERSION: "${{ github.ref_name }}"
       # Choose one of the two following
-      SCDAST_SETTINGS: "6729c7ad-6240-4b0c-8945-9e2bec00c6f9"
-      BASE_SETTINGS: "BodgeIt[Std][Auth][SVC]"
+      SCDAST_SETTINGS: "43ab8848-c3c7-45ec-ae57-b86457ab1526"
+      BASE_SETTINGS: ""
       # 
       WAIT: false
       DELETE_SETTINGS: true
