@@ -23,9 +23,9 @@ jobs:
       BASE_SETTINGS: "BodgeIt[Std][Auth][SVC]"
       SCDAST_SETTINGS: ""
       # 
-      WAIT: ${{ false }}
-      DELETE_SETTINGS: ${{ true }}
-
+      WAIT: false
+      DELETE_SETTINGS: true
+      
     steps:
       # # Check out source code
       # - name: Check Out Source Code
@@ -84,12 +84,12 @@ jobs:
 
       # Wait for DAST scan to complete
       - name: Wait for DAST Scan Completion
-        if: ${{ env.WAIT }}
+        if: ${{ env.WAIT == 'true' }}
         run: fcli sc-dast scan wait-for -u=Complete '{?dastscan:id}'  -i 30s
 
       # Cleanup Scan Settings made from Base Settings
       - name : Delete Settings from Base Settings
-        if: ${{ env.BASE_SETTINGS }} && ${{ env.DELETE_SETTINGS }}
+        if: ${{ env.BASE_SETTINGS }} && ${{ env.DELETE_SETTINGS == 'true' }}
         continue-on-error: true
         run: |
           res=$(fcli sc-dast rest call /api/v2/application-version-scan-settings/$(fcli config var contents get scansettings -o expr={id}) -X DELETE) || true
