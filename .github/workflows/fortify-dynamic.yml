@@ -23,7 +23,7 @@ jobs:
       BASE_SETTINGS: "BodgeIt[Std][Auth][SVC]"
       SCDAST_SETTINGS: ""
       # 
-      WAIT: ${{ true }}
+      WAIT: ${{ false }}
       DELETE_SETTINGS: ${{ true }}
 
     steps:
