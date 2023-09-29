@@ -2,7 +2,6 @@ name: Fortify DAST Scan
 on:
   workflow_dispatch:  
   push:
-    # Master or main branch that you want to trigger this workflow for
     branches: [7.0-gh-fortify]
 
 jobs:
