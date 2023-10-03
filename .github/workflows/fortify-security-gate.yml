@@ -18,8 +18,8 @@ jobs:
       VERSION: "${{ github.ref_name }}"
       PERFORMANCEINDICATOR: FortifySecurityRating
       PERFORMANCEINDICATOR_COMPARE: "<= 3"
-      PERFORMANCEINDICATOR_WARN: true
       PERFORMANCEINDICATOR_BLOCK: true
+      PERFORMANCEINDICATOR_WARN: true
       
     steps:
       # Login
@@ -41,6 +41,7 @@ jobs:
           if (( $comparison | bc -l )); then
             if (( $PERFORMANCEINDICATOR_BLOCK )); then
               echo "::error ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue"
+              exit 1
             elif (( $PERFORMANCEINDICATOR_WARN )); then
               echo "::warning ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue"
             fi
