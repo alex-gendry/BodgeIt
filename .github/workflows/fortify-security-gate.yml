@@ -39,11 +39,12 @@ jobs:
           comparison="$performanceIndicatorValue $PERFORMANCEINDICATOR_COMPARE"
           echo "Checking if $comparison"
           if (( $comparison | bc -l )); then
+            fcli ssc appversion-vuln count --appversion $applicationVersionId
             if (( $PERFORMANCEINDICATOR_BLOCK )); then
-              echo "::error ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue"
+              echo "::error ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue) $(fcli ssc appversion-vuln count --appversion 104 -o expr="/{cleanName}: {totalCount}")"
               exit 1
             elif (( $PERFORMANCEINDICATOR_WARN )); then
-              echo "::warning ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue)"
+              echo "::warning ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue) $(fcli ssc appversion-vuln count --appversion 104 -o expr="/{cleanName}: {totalCount}")"
             fi
           else 
               echo "Security Gate passed"
