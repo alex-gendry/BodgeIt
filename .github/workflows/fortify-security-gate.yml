@@ -36,8 +36,9 @@ jobs:
           
           performanceIndicatorValue=$(fcli ssc rest call /api/v1/projectVersions/$applicationVersionId/performanceIndicatorHistories/$PERFORMANCEINDICATOR -o expr={data.value})
           echo "$PERFORMANCEINDICATOR for ${APPLICATION}:${VERSION} is $performanceIndicatorValue"
-          
-          if (( $(echo "$performanceIndicatorValue $PERFORMANCEINDICATOR_COMPARE" |bc -l) )); then
+          comparison="$performanceIndicatorValue $PERFORMANCEINDICATOR_COMPARE"
+          echo "Checking if comparison"
+          if (( $(echo  |bc -l) )); then
             echo "::warning file=app.js,line=1,col=5,endColumn=7::Missing semicolon"
           fi
 
