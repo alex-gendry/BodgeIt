@@ -20,8 +20,8 @@ jobs:
       - name: Export Fortify vulnerability data
         uses: fortify/gha-export-vulnerabilities@v1.0.0
         with:
-          ssc_base_url: ${{ vars.FTFY_SSC_URL }}
-          ssc_auth_token: ${{ secrets.SSC_UPLOAD_TOKEN }}
+          ssc_base_url: ${{ secrets.FTFY_SSC_URL }}
+          ssc_auth_token: ${{ secrets.FTFY_CI_TOKEN_DEC }}
           ssc_version_name: ${{ APPLICATION }}:${{ VERSION }}
 
       # Import Fortify SAST results to GitHub Security Code Scanning
