@@ -28,6 +28,7 @@ jobs:
         run: |
           applicationVersionId=$(fcli ssc appversion get ${APPLICATION}:${VERSION} -o expr={id})
           echo "Checking Security Gate for Application Version ${APPLICATION}:${VERSION} ($applicationVersionId)"
+          echo "/api/v1/projectVersions/$applicationVersionId/performanceIndicatorHistories/$PERFORMANCEINDICATOR"
           performanceIndicatorValue=$(fcli ssc rest call /api/v1/projectVersions/$applicationVersionId/performanceIndicatorHistories/$PERFORMANCEINDICATOR -o expr={data.value})
           
           if (( $((performanceIndicatorValue)) <=3 )); then
