@@ -33,10 +33,11 @@ jobs:
         
           applicationVersionId=$(fcli ssc appversion get ${APPLICATION}:${VERSION} -o expr={id})
           echo "Checking Security Gate for Application Version ${APPLICATION}:${VERSION} ($applicationVersionId)"
-        
+
+          echo "Looking for $PERFORMANCEINDICATOR in ${APPLICATION}:${VERSION}"
           fcli ssc rest call /api/v1/projectVersions/$applicationVersionId/performanceIndicatorHistories?q=name:"$PERFORMANCEINDICATOR"  --store performanceIndicatorList
           performanceIndicatorCount=$(fcli config var contents list performanceIndicatorList -o expr={count})
-          if (( $count == 0 )); then
+          if (( $count -eq 0 )); then
             echo "::error ::Fortify Security Gate Failed: $PERFORMANCEINDICATOR not found for ${APPLICATION}:${VERSION}"  
             exit 1
           else
