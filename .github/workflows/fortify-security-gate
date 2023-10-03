@@ -4,6 +4,7 @@ on:
   push:
     branches: [7.0-gh-fortify]
 
+
 jobs:
   Fortify-Security-Gate:
     # Use the appropriate runner for building your source code
