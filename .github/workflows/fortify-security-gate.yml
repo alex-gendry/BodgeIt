@@ -17,7 +17,7 @@ jobs:
       APPLICATION: "${{ github.event.repository.name }}"
       VERSION: "${{ github.ref_name }}"
       PERFORMANCEINDICATOR: Test
-      PERFORMANCEINDICATOR_COMPARE: "<= 3"
+      PERFORMANCEINDICATOR_COMPARE: "> 3"
       PERFORMANCEINDICATOR_BLOCK: true
       PERFORMANCEINDICATOR_WARN: true
       
