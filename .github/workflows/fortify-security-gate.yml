@@ -1,4 +1,4 @@
-name: Fortify Security Gate
+ name: Fortify Security Gate
 on:
   workflow_dispatch:  
   push:
@@ -50,7 +50,7 @@ jobs:
           comparison="$performanceIndicatorValue $PERFORMANCEINDICATOR_COMPARE"
           echo "Checking if $comparison"
           set -x
-          if [ $($comparison | bc -l) = 0 ]; then
+          if [ $(echo $comparison | bc -l) ]; then
             fcli ssc appversion-vuln count --appversion $applicationVersionId
             if (( $PERFORMANCEINDICATOR_BLOCK )); then
               echo "::error ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue) $(fcli ssc appversion-vuln count --appversion $applicationVersionId -o expr=" {cleanName}: {totalCount}") $FTFY_SSC_URL/html/ssc/version/$applicationVersionId/audit"    
