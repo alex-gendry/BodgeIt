@@ -1,4 +1,4 @@
-honame: Fortify Security Gate
+name: Fortify Security Gate
 on:
   workflow_dispatch:  
   push:
