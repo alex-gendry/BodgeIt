@@ -49,6 +49,7 @@ jobs:
           echo "$PERFORMANCEINDICATOR for ${APPLICATION}:${VERSION} is $performanceIndicatorValue"
           comparison="$performanceIndicatorValue $PERFORMANCEINDICATOR_COMPARE"
           echo "Checking if $comparison"
+          set -x
           if (( $comparison | bc -l )); then
             fcli ssc appversion-vuln count --appversion $applicationVersionId
             if (( $PERFORMANCEINDICATOR_BLOCK )); then
