@@ -39,7 +39,13 @@ jobs:
           comparison="$performanceIndicatorValue $PERFORMANCEINDICATOR_COMPARE"
           echo "Checking if $comparison"
           if (( $comparison | bc -l )); then
-            echo "::warning ::Fortify Security Gate Failed"
+            if (( $PERFORMANCEINDICATOR_BLOCK )); then
+              echo "::error ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue"
+            elif (( $PERFORMANCEINDICATOR_WARN )); then
+              echo "::warning ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue"
+            fi
+          else 
+              echo "Security Gate passed"
           fi
 
 
