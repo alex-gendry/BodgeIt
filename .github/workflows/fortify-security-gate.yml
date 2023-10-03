@@ -29,6 +29,8 @@ jobs:
 
       - name : Security Gate
         run: |
+          apt install bc
+        
           applicationVersionId=$(fcli ssc appversion get ${APPLICATION}:${VERSION} -o expr={id})
           echo "Checking Security Gate for Application Version ${APPLICATION}:${VERSION} ($applicationVersionId)"
           
