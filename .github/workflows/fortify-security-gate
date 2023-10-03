@@ -1,0 +1,39 @@
+name: Fortify Security Gate
+on:
+  workflow_dispatch:  
+  push:
+    branches: [7.0-gh-fortify]
+
+jobs:
+  Fortify-Security-Gate:
+    # Use the appropriate runner for building your source code
+    runs-on: ubuntu-latest
+    container:
+      image: fortifydocker/fortify-ci-tools
+    env:
+      FTFY_SSC_URL: ${{ secrets.FTFY_SSC_URL }}
+      FTFY_CI_TOKEN_ENC: ${{ secrets.FTFY_CI_TOKEN_ENC }}
+      APPLICATION: "${{ github.event.repository.name }}"
+      VERSION: "${{ github.ref_name }}"
+      $PERFORMANCEINDICATOR: FortifySecurityRating
+      
+    steps:
+      # Login
+      - name: Login to Fortify
+        run: |
+          fcli ssc session login --url $FTFY_SSC_URL -t $FTFY_CI_TOKEN_ENC
+
+      - name : Security Gate
+        run: |
+          applicationVersionId=$(fcli ssc appversion get ${APPLICATION}:${VERSION} -o expr={id})
+          performanceIndicatorValue=$(fcli ssc rest call /api/v1/projectVersions/$applicationVersionId/performanceIndicatorHistories/$PERFORMANCEINDICATOR -o expr={data.value})
+          
+          if (( $((performanceIndicatorValue)) <=3 )); then
+            echo "::warning file=app.js,line=1,col=5,endColumn=7::Missing semicolon"
+          fi
+
+
+      # Clean up tokens, session variables, ...
+      - name: Cleanup
+        run: |
+          fcli ssc session logout --no-revoke-token
