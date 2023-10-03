@@ -16,6 +16,7 @@ jobs:
       FTFY_CI_TOKEN_ENC: ${{ secrets.FTFY_CI_TOKEN_ENC }}
       APPLICATION: "${{ github.event.repository.name }}"
       VERSION: "${{ github.ref_name }}"
+      SHA: "${{ github.run_id }}"
       PERFORMANCEINDICATOR: Test
       PERFORMANCEINDICATOR_CONDITION: "> 50"
       PERFORMANCEINDICATOR_BLOCK: false
@@ -35,14 +36,14 @@ jobs:
           echo "Checking Security Gate for Application Version ${APPLICATION}:${VERSION} ($applicationVersionId)"
 
           echo "Looking for $PERFORMANCEINDICATOR in ${APPLICATION}:${VERSION}"
-          fcli ssc rest call /api/v1/projectVersions/$applicationVersionId/performanceIndicatorHistories?q=name:"$PERFORMANCEINDICATOR"  --store performanceIndicatorList
-          performanceIndicatorCount=$(fcli config var contents list performanceIndicatorList -o expr={count})
+          fcli ssc rest call /api/v1/projectVersions/$applicationVersionId/performanceIndicatorHistories?q=name:"$PERFORMANCEINDICATOR"  --store performanceIndicatorList_$SHA
+          performanceIndicatorCount=$(fcli config var contents list performanceIndicatorList_$SHA -o expr={count})
           
           if [ "$performanceIndicatorCount" = 0 ]; then
             echo "::error ::Fortify Security Gate Failed: $PERFORMANCEINDICATOR not found for ${APPLICATION}:${VERSION}"  
             exit 1
           else
-            performanceIndicatorId=$(fcli config var contents get performanceIndicatorList -o expr={data[0].id})
+            performanceIndicatorId=$(fcli config var contents get performanceIndicatorList_$SHA -o expr={data[0].id})
           fi
           
           performanceIndicatorValue=$(fcli ssc rest call /api/v1/projectVersions/$applicationVersionId/performanceIndicatorHistories/$performanceIndicatorId -o expr={data.value})
@@ -65,4 +66,5 @@ jobs:
       # Clean up tokens, session variables, ...
       - name: Cleanup
         run: |
+          fcli config var def rm performanceIndicatorList_$SHA
           fcli ssc session logout --no-revoke-token
