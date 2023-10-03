@@ -41,10 +41,12 @@ jobs:
           if (( $comparison | bc -l )); then
             fcli ssc appversion-vuln count --appversion $applicationVersionId
             if (( $PERFORMANCEINDICATOR_BLOCK )); then
-              echo "::error ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue) $(fcli ssc appversion-vuln count --appversion 104 -o expr=" {cleanName}: {totalCount}")"
+              echo "::error ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue) $(fcli ssc appversion-vuln count --appversion $applicationVersionId -o expr=" {cleanName}: {totalCount}")
+                     $FTFY_SSC_URL/html/ssc/version/$applicationVersionId/audit"
               exit 1
             elif (( $PERFORMANCEINDICATOR_WARN )); then
-              echo "::warning ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue) $(fcli ssc appversion-vuln count --appversion 104 -o expr=" {cleanName}: {totalCount}")"
+              echo "::warning ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue) $(fcli ssc appversion-vuln count --appversion $applicationVersionId -o expr=" {cleanName}: {totalCount}")
+                     $FTFY_SSC_URL/html/ssc/version/$applicationVersionId/audit"
             fi
           else 
               echo "Security Gate passed"
