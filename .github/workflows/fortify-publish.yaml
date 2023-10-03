@@ -5,7 +5,7 @@ on:
 jobs:
   Fortify-Publish:
     # Use the appropriate runner for building your source code
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       # required for all workflows
       security-events: write
