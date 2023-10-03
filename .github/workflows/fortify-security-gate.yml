@@ -39,7 +39,7 @@ jobs:
           comparison="$performanceIndicatorValue $PERFORMANCEINDICATOR_COMPARE"
           echo "Checking if $comparison"
           if (( $(echo $comparison |bc -l) )); then
-            echo "::warning file=app.js,line=1,col=5,endColumn=7::Missing semicolon"
+            echo "::warning ::Fortify Security Gate Failed"
           fi
 
 
