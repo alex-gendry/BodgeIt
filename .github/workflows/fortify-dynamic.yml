@@ -17,7 +17,7 @@ jobs:
       SHA: "${{ github.run_id }}"
       VERSION: "${{ github.ref_name }}"
       # Choose one of the two following (default: BASE_SETTINGS)
-      BASE_SETTINGS: "BodgeIt[Std][Auth][SVC]"
+      BASE_SETTINGS: "Rancher [AllChecks][Auth]"
       SCDAST_SETTINGS: ""
       # 
       WAIT: false
