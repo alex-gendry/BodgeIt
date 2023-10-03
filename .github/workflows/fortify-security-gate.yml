@@ -19,7 +19,7 @@ jobs:
       SHA: "${{ github.run_id }}"
       PERFORMANCEINDICATOR: Test
       PERFORMANCEINDICATOR_CONDITION: "> 50"
-      PERFORMANCEINDICATOR_BLOCK: false
+      PERFORMANCEINDICATOR_BLOCK: true
       PERFORMANCEINDICATOR_WARN: true
       
     steps:
@@ -65,6 +65,7 @@ jobs:
 
       # Clean up tokens, session variables, ...
       - name: Cleanup
+        if: always()
         run: |
           fcli config var def rm performanceIndicatorList_$SHA
           fcli ssc session logout --no-revoke-token
