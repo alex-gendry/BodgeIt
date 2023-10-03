@@ -22,7 +22,7 @@ jobs:
         with:
           ssc_base_url: ${{ secrets.FTFY_SSC_URL }}
           ssc_auth_token: ${{ secrets.FTFY_CI_TOKEN_DEC }}
-          ssc_version_name: ${{ APPLICATION }}:${{ VERSION }}
+          ssc_version_name: ${{ env.APPLICATION }}:${{ env.VERSION }}
 
       # Import Fortify SAST results to GitHub Security Code Scanning
       - name: Import Results
