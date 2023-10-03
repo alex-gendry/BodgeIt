@@ -17,6 +17,8 @@ jobs:
       APPLICATION: "${{ github.event.repository.name }}"
       VERSION: "${{ github.ref_name }}"
       PERFORMANCEINDICATOR: FortifySecurityRating
+      PERFORMANCEINDICATOR_WARN: true
+      PERFORMANCEINDICATOR_BLOCK: true
       
     steps:
       # Login
@@ -32,7 +34,8 @@ jobs:
           performanceIndicatorValue=$(fcli ssc rest call /api/v1/projectVersions/$applicationVersionId/performanceIndicatorHistories/$PERFORMANCEINDICATOR -o expr={data.value})
           echo "$PERFORMANCEINDICATOR for ${APPLICATION}:${VERSION} is $performanceIndicatorValue"
           
-          if (( $((performanceIndicatorValue)) <=3 )); then
+          if (( $(( $performanceIndicatorValue )) <=3 )); then
+            
             echo "::warning file=app.js,line=1,col=5,endColumn=7::Missing semicolon"
           fi
 
