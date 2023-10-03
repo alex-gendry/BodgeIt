@@ -42,7 +42,7 @@ jobs:
             echo "::error ::Fortify Security Gate Failed: $PERFORMANCEINDICATOR not found for ${APPLICATION}:${VERSION}"  
             exit 1
           else
-            performanceIndicatorId=$(fcli config var contents get performanceindicatorlist -o expr={data[0].id})
+            performanceIndicatorId=$(fcli config var contents get performanceIndicatorList -o expr={data[0].id})
           fi
           
           performanceIndicatorValue=$(fcli ssc rest call /api/v1/projectVersions/$applicationVersionId/performanceIndicatorHistories/$performanceIndicatorId -o expr={data.value})
