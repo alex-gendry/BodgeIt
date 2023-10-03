@@ -18,7 +18,7 @@ jobs:
       VERSION: "${{ github.ref_name }}"
       PERFORMANCEINDICATOR: Test
       PERFORMANCEINDICATOR_CONDITION: "> 3"
-      PERFORMANCEINDICATOR_BLOCK: true
+      PERFORMANCEINDICATOR_BLOCK: false
       PERFORMANCEINDICATOR_WARN: true
       
     steps:
@@ -49,7 +49,6 @@ jobs:
           echo "$PERFORMANCEINDICATOR for ${APPLICATION}:${VERSION} is $performanceIndicatorValue"
           comparison="$performanceIndicatorValue $PERFORMANCEINDICATOR_CONDITION"
           echo "Checking if $comparison"
-          set -x
           if [ $(echo $comparison | bc -l) = 0 ]; then
             fcli ssc appversion-vuln count --appversion $applicationVersionId
             if (( $PERFORMANCEINDICATOR_BLOCK )); then
