@@ -33,6 +33,10 @@ jobs:
         
           applicationVersionId=$(fcli ssc appversion get ${APPLICATION}:${VERSION} -o expr={id})
           echo "Checking Security Gate for Application Version ${APPLICATION}:${VERSION} ($applicationVersionId)"
+        
+          fcli ssc rest call /api/v1/projectVersions/13/performanceIndicatorHistories?q=name:"Test"  --store performanceIndicatorList
+          performanceIndicatorCount=$(fcli config var contents list performanceIndicatorList -o expr={count})
+          if (( $count > 0
           
           performanceIndicatorValue=$(fcli ssc rest call /api/v1/projectVersions/$applicationVersionId/performanceIndicatorHistories/$PERFORMANCEINDICATOR -o expr={data.value})
           echo "$PERFORMANCEINDICATOR for ${APPLICATION}:${VERSION} is $performanceIndicatorValue"
