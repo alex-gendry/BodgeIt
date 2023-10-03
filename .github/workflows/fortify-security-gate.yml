@@ -16,7 +16,7 @@ jobs:
       FTFY_CI_TOKEN_ENC: ${{ secrets.FTFY_CI_TOKEN_ENC }}
       APPLICATION: "${{ github.event.repository.name }}"
       VERSION: "${{ github.ref_name }}"
-      PERFORMANCEINDICATOR: Fortify Security Rating
+      PERFORMANCEINDICATOR: Test
       PERFORMANCEINDICATOR_COMPARE: "<= 3"
       PERFORMANCEINDICATOR_BLOCK: true
       PERFORMANCEINDICATOR_WARN: true
