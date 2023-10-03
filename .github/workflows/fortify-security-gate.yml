@@ -43,7 +43,7 @@ jobs:
               echo "::error ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue"
               exit 1
             elif (( $PERFORMANCEINDICATOR_WARN )); then
-              echo "::warning ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue"
+              echo "::warning ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue)"
             fi
           else 
               echo "Security Gate passed"
