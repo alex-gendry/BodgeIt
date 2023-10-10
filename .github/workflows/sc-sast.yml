@@ -12,7 +12,9 @@ on:
 jobs:
   Fortify-SAST:
     # Use the appropriate runner for building your source code
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
+    container:
+      image: fortifydocker/fortify-ci-tools
     permissions:
       # required for all workflows
       security-events: write
@@ -46,9 +48,15 @@ jobs:
         run: fcli ssc session login --url $FTFY_SSC_URL -t $FTFY_CI_TOKEN_DEC
       - name: Login to SC SAST
         run:  fcli sc-sast session login --ssc-url $FTFY_SSC_URL -t $FTFY_CI_TOKEN_DEC -c $CLIENT_AUTH_TOKEN
-      # Create appversion
+        
+      # GitHub Action for Application Version creation
       - name: Create Application Version
-        run: fcli ssc appversion create ${APPLICATION}:${VERSION} --auto-required-attrs --skip-if-exists
+        uses: agendry-pub/gha-ssc-create-application-version@v1
+        with:
+          ssc_url: ${{ vars.FTFY_SSC_URL}}
+          # ssc_ci_token: ${{ secrets.FTFY_CI_TOKEN_DEC }}
+          ssc_app: ${{ env.APPLICATION }}
+          ssc_version: ${{ env.VERSION }}
 
       # Package sources
       - name: Package Sources
