@@ -8,8 +8,8 @@ jobs:
     steps:
       - name: Adding markdown
         run: echo '### Hello world! 🚀' >> $GITHUB_STEP_SUMMARY
-      - name: Adding markdown
-        run: echo '### Hello again! 🚀' >> $GITHUB_STEP_SUMMARY
+      - name: notice        
+        run: echo "::notice file=app.js,line=1,col=5,endColumn=7::Missing semicolon"
 
   
   Explore-GitHub-Actions-bis:
