@@ -62,6 +62,9 @@ jobs:
               echo "Security Gate passed"
           fi
 
+      - name: Adding markdown
+        run: echo '### Hello world! 🚀' >> $GITHUB_STEP_SUMMARY
+
 
       # Clean up tokens, session variables, ...
       - name: Cleanup
