@@ -47,7 +47,7 @@ jobs:
       - name: Login to SSC
         run: fcli ssc session login --url $FTFY_SSC_BASE_URL -t $FTFY_CI_TOKEN_DEC
       - name: Login to SC SAST
-        run:  fcli sc-sast session login --ssc-url $FTFY_SSC_BASE_URL -t $FTFY_CI_TOKEN_DEC -c $FTFY_SC_CLIENT_AUTH_TOKEN
+        run:  fcli sc-sast session login --ssc-url $FTFY_SSC_BASE_URL -t $FTFY_SSC_CI_TOKEN_ENC -c $FTFY_SC_CLIENT_AUTH_TOKEN
         
       # GitHub Action for Application Version creation
       - name: Create Application Version
