@@ -25,7 +25,7 @@ jobs:
       FTFY_SC_CONTROLLER_URL: ${{ vars.FTFY_SC_CONTROLLER_URL }}
       FTFY_SSC_UPLOAD_TOKEN: ${{ secrets.FTFY_SSC_UPLOAD_TOKEN }}
       FTFY_SSC_BASE_URL: ${{ vars.FTFY_SSC_BASE_URL }}
-      FTFY_CI_TOKEN_ENC: ${{ secrets.FTFY_CI_TOKEN_ENC }}
+      FTFY_SSC_CI_TOKEN_ENC: ${{ secrets.FTFY_SSC_CI_TOKEN_ENC }}
       FTFY_SC_CLIENT_AUTH_TOKEN: ${{ secrets.FTFY_SC_CLIENT_AUTH_TOKEN }}
       APPLICATION: "${{ github.event.repository.name }}"
       VERSION: "${{ github.ref_name }}"
