@@ -29,6 +29,7 @@
     window.setTimeout(loadOthers, 10);
     
     function loadOthers(){
+
         if (window.jQuery) {
             loadfile('./js/encryption.js');
             loadfile('./js/advanced2.js');
