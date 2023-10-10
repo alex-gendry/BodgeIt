@@ -22,11 +22,11 @@ jobs:
       actions: read
       contents: read
     env:
-      SC_CONTROLLER_URL: ${{ secrets.SC_CONTROLLER_URL }}
-      SSC_UPLOAD_TOKEN: ${{ secrets.SSC_UPLOAD_TOKEN }}
-      FTFY_SSC_URL: ${{ secrets.FTFY_SSC_URL }}
-      FTFY_CI_TOKEN_DEC: ${{ secrets.FTFY_CI_TOKEN_DEC }}
-      CLIENT_AUTH_TOKEN: ${{ secrets.CLIENT_AUTH_TOKEN }}
+      FTFY_SC_CONTROLLER_URL: ${{ vars.FTFY_SC_CONTROLLER_URL }}
+      FTFY_SSC_UPLOAD_TOKEN: ${{ secrets.FTFY_SSC_UPLOAD_TOKEN }}
+      FTFY_SSC_BASE_URL: ${{ vars.FTFY_SSC_BASE_URL }}
+      FTFY_CI_TOKEN_ENC: ${{ secrets.FTFY_CI_TOKEN_ENC }}
+      FTFY_SC_CLIENT_AUTH_TOKEN: ${{ secrets.FTFY_SC_CLIENT_AUTH_TOKEN }}
       APPLICATION: "${{ github.event.repository.name }}"
       VERSION: "${{ github.ref_name }}"
       BUILD_OPTS: "-bt none"
@@ -45,15 +45,15 @@ jobs:
       ### Run Fortify SAST ###
       # Login
       - name: Login to SSC
-        run: fcli ssc session login --url $FTFY_SSC_URL -t $FTFY_CI_TOKEN_DEC
+        run: fcli ssc session login --url $FTFY_SSC_BASE_URL -t $FTFY_CI_TOKEN_DEC
       - name: Login to SC SAST
-        run:  fcli sc-sast session login --ssc-url $FTFY_SSC_URL -t $FTFY_CI_TOKEN_DEC -c $CLIENT_AUTH_TOKEN
+        run:  fcli sc-sast session login --ssc-url $FTFY_SSC_BASE_URL -t $FTFY_CI_TOKEN_DEC -c $FTFY_SC_CLIENT_AUTH_TOKEN
         
       # GitHub Action for Application Version creation
       - name: Create Application Version
         uses: agendry-pub/gha-ssc-create-application-version@v1
         with:
-          ssc_url: ${{ vars.FTFY_SSC_URL}}
+          ssc_url: ${{ vars.FTFY_SSC_BASE_URL}}
           # ssc_ci_token: ${{ secrets.FTFY_CI_TOKEN_DEC }}
           ssc_app: ${{ env.APPLICATION }}
           ssc_version: ${{ env.VERSION }}
@@ -74,7 +74,7 @@ jobs:
       - name: Export Fortify vulnerability data
         uses: fortify/gha-export-vulnerabilities@v1.0.0
         with:
-          ssc_base_url: ${{ secrets.FTFY_SSC_URL }}
+          ssc_base_url: ${{ secrets.FTFY_SSC_BASE_URL }}
           ssc_auth_token: ${{ secrets.FTFY_CI_TOKEN_DEC }}
           ssc_version_name: ${{ github.event.repository.name }}:${{ github.ref_name }}
 
