@@ -18,7 +18,7 @@ jobs:
       VERSION: "${{ github.ref_name }}"
       SHA: "${{ github.run_id }}"
       PERFORMANCEINDICATOR: Test
-      PERFORMANCEINDICATOR_CONDITION: "> 50"
+      PERFORMANCEINDICATOR_CONDITION: "< 50"
       PERFORMANCEINDICATOR_BLOCK: true
       PERFORMANCEINDICATOR_WARN: true
       
