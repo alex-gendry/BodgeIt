@@ -56,6 +56,10 @@ jobs:
           # ssc_ci_token: ${{ secrets.FTFY_CI_TOKEN_DEC }}
           ssc_app: ${{ env.APPLICATION }}
           ssc_version: ${{ env.VERSION }}
+          ssc_version_attributes: |
+            Accessibility=Internal Network Access Required
+            DevStrategy=Internally Developed
+            DevPhase=New
 
       # Package sources
       - name: Package Sources
