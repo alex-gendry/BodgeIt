@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     # Master or main branch that you want to trigger this workflow for
-    branches: [7.0-gh-fortify]
+    branches: []
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [7.0-gh-fortify]
@@ -68,7 +68,7 @@ jobs:
 
       # Run Scan
       - name: Run Scan
-        run: fcli sc-sast scan start -p package.zip --sensor-version 22.2 --appversion ${APPLICATION}:${VERSION} --store '?'
+        run: fcli sc-sast scan start -p package.zip --sensor-version 23.1 --appversion ${APPLICATION}:${VERSION} --store '?'
 
       # Wait for SAST scan to complete
       - name: Wait for Scan Completion
