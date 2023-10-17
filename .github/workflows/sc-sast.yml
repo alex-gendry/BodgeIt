@@ -43,17 +43,15 @@ jobs:
 
       ### Run Fortify SAST ###
       # Login
-      - name: Login to SSC
-        run: fcli ssc session login --url $FTFY_SSC_BASE_URL -t $FTFY_SSC_CI_TOKEN_ENC
-      - name: Login to SC SAST
-        run:  fcli sc-sast session login --ssc-url $FTFY_SSC_BASE_URL -t $FTFY_SSC_CI_TOKEN_ENC -c $FTFY_SC_CLIENT_AUTH_TOKEN
+      # - name: Login to SSC
+      #   run: fcli ssc session login --url $FTFY_SSC_BASE_URL -t $FTFY_SSC_CI_TOKEN_ENC
         
       # GitHub Action for Application Version creation
       - name: Create Application Version
         uses: agendry-pub/gha-ssc-create-application-version@v1
         with:
           ssc_base_url: ${{ vars.FTFY_SSC_BASE_URL}}
-          # ssc_ci_token: ${{ secrets.FTFY_CI_TOKEN_DEC }}
+          ssc_ci_token: ${{ secrets.FTFY_CI_TOKEN_DEC }}
           ssc_app: ${{ env.APPLICATION }}
           ssc_version: ${{ env.VERSION }}
           ssc_version_attributes: |
@@ -65,6 +63,9 @@ jobs:
       - name: Package Sources
         run: |
           scancentral package $BUILD_OPTS -o package.zip
+      
+      - name: Login to SC SAST
+        run:  fcli sc-sast session login --ssc-url $FTFY_SSC_BASE_URL -t $FTFY_SSC_CI_TOKEN_ENC -c $FTFY_SC_CLIENT_AUTH_TOKEN
 
       # Run Scan
       - name: Run Scan
