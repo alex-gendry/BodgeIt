@@ -24,7 +24,6 @@ jobs:
     env:
       FTFY_SC_CONTROLLER_URL: ${{ vars.FTFY_SC_CONTROLLER_URL }}
       FTFY_SSC_BASE_URL: ${{ vars.FTFY_SSC_BASE_URL }}
-      FTFY_SSC_CI_TOKEN_ENC: ${{ secrets.FTFY_SSC_CI_TOKEN_ENC }}
       FTFY_SC_CLIENT_AUTH_TOKEN: ${{ secrets.FTFY_SC_CLIENT_AUTH_TOKEN }}
       APPLICATION: "${{ github.event.repository.name }}"
       VERSION: "${{ github.ref_name }}"
@@ -51,7 +50,7 @@ jobs:
         uses: agendry-pub/gha-ssc-create-application-version@v1
         with:
           ssc_base_url: ${{ vars.FTFY_SSC_BASE_URL}}
-          ssc_ci_token: ${{ secrets.FTFY_CI_TOKEN_DEC }}
+          ssc_ci_token: ${{ secrets.FTFY_SSC_CI_TOKEN_ENC }}
           ssc_app: ${{ env.APPLICATION }}
           ssc_version: ${{ env.VERSION }}
           ssc_version_attributes: |
