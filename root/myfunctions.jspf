@@ -1,7 +1,0 @@
-
-<%!
-
-    public string cleanBasket(basketId) {
-        return basketId;
-    }
-%>
