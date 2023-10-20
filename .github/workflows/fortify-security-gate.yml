@@ -1,8 +1,8 @@
 name: Fortify Security Gate
 on:
   workflow_dispatch:  
-  push:
-    branches: [7.0-gh-fortify]
+#  push:
+#    branches: [7.0-gh-fortify]
 
 
 jobs:

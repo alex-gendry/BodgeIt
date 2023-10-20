@@ -1,8 +1,8 @@
-name: Fortify DAST Scan
+name: Fortify ScanCentral DAST Scan
 on:
   workflow_dispatch:  
-  push:
-    branches: [7.0-gh-fortify]
+#  push:
+#    branches: [7.0-gh-fortify]
 
 jobs:
   Fortify-DAST:
