@@ -22,9 +22,7 @@ name: Fortify on Demand SAST Scan
 on:
   workflow_dispatch:
   push:
-    branches:
-#  pull_request:
-#    branches: [ master ]
+  pull_request:
 
 jobs:
   FoD-SAST-Scan:
