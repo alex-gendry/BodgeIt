@@ -29,7 +29,7 @@ if (request.getMethod().equals("POST") && username != null) {
 		Statement stmt = conn.createStatement();
 		ResultSet rs = null;
 		try {
-
+			stmt.executeQuery("INSERT INTO Users (name, type, password) VALUES ('" + username + "', 'USER', '" + password1 + "')");
 			rs = stmt.executeQuery("SELECT * FROM Users WHERE (name = '" + username + "' AND password = '" + password1 + "')");
 			rs.next();
 			userid =  "" + rs.getInt("userid"); 
