@@ -1,0 +1,74 @@
+name: Fortify Security Gate
+on:
+  workflow_dispatch:  
+#  push:
+#    branches: [7.0-gh-fortify]
+
+
+jobs:
+  Fortify-Security-Gate:
+    # Use the appropriate runner for building your source code
+    runs-on: ubuntu-latest
+    container:
+      image: fortifydocker/fortify-ci-tools
+    env:
+      FTFY_SSC_URL: ${{ secrets.FTFY_SSC_URL }}
+      FTFY_CI_TOKEN_ENC: ${{ secrets.FTFY_CI_TOKEN_ENC }}
+      APPLICATION: "${{ github.event.repository.name }}"
+      VERSION: "${{ github.ref_name }}"
+      SHA: "${{ github.run_id }}"
+      PERFORMANCEINDICATOR: Test
+      PERFORMANCEINDICATOR_CONDITION: "< 50"
+      PERFORMANCEINDICATOR_BLOCK: true
+      PERFORMANCEINDICATOR_WARN: true
+      
+    steps:
+      # Login
+      - name: Login to Fortify
+        run: |
+          fcli ssc session login --url $FTFY_SSC_URL -t $FTFY_CI_TOKEN_ENC
+
+      - name : Security Gate
+        run: |
+          apt -qq update && apt -qq install bc -y
+        
+          applicationVersionId=$(fcli ssc appversion get ${APPLICATION}:${VERSION} -o expr={id})
+          echo "Checking Security Gate for Application Version ${APPLICATION}:${VERSION} ($applicationVersionId)"
+
+          echo "Looking for $PERFORMANCEINDICATOR in ${APPLICATION}:${VERSION}"
+          fcli ssc rest call /api/v1/projectVersions/$applicationVersionId/performanceIndicatorHistories?q=name:"$PERFORMANCEINDICATOR"  --store performanceIndicatorList_$SHA
+          performanceIndicatorCount=$(fcli config var contents list performanceIndicatorList_$SHA -o expr={count})
+          
+          if [ "$performanceIndicatorCount" = 0 ]; then
+            echo "::error ::Fortify Security Gate Failed: $PERFORMANCEINDICATOR not found for ${APPLICATION}:${VERSION}"  
+            exit 1
+          else
+            performanceIndicatorId=$(fcli config var contents get performanceIndicatorList_$SHA -o expr={data[0].id})
+          fi
+          
+          performanceIndicatorValue=$(fcli ssc rest call /api/v1/projectVersions/$applicationVersionId/performanceIndicatorHistories/$performanceIndicatorId -o expr={data.value})
+          echo "$PERFORMANCEINDICATOR for ${APPLICATION}:${VERSION} is $performanceIndicatorValue"
+          comparison="$performanceIndicatorValue $PERFORMANCEINDICATOR_CONDITION"
+          echo "Checking if $comparison"
+          if [ $(echo $comparison | bc -l) = 0 ]; then
+            fcli ssc appversion-vuln count --appversion $applicationVersionId
+            if (( $PERFORMANCEINDICATOR_BLOCK )); then
+              echo "::error ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue) $(fcli ssc appversion-vuln count --appversion $applicationVersionId -o expr=" {cleanName}: {totalCount}") $FTFY_SSC_URL/html/ssc/version/$applicationVersionId/audit"    
+              exit 1
+            elif (( $PERFORMANCEINDICATOR_WARN )); then
+              echo "::warning ::Fortify Security Gate Failed ($PERFORMANCEINDICATOR = $performanceIndicatorValue) $(fcli ssc appversion-vuln count --appversion $applicationVersionId -o expr=" {cleanName}: {totalCount}") $FTFY_SSC_URL/html/ssc/version/$applicationVersionId/audit"
+            fi
+          else 
+              echo "Security Gate passed"
+          fi
+
+      - name: Adding markdown
+        run: echo '### Hello world! 🚀' >> $GITHUB_STEP_SUMMARY
+
+
+      # Clean up tokens, session variables, ...
+      - name: Cleanup
+        if: always()
+        run: |
+          fcli config var def rm performanceIndicatorList_$SHA
+          fcli ssc session logout --no-revoke-token
