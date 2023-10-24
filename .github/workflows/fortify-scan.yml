@@ -18,20 +18,8 @@ jobs:
     env:
       APPLICATION: "${{ github.event.repository.name }}"
       VERSION: "${{ github.ref_name }}"
-
       # Requires GitHub Advanced Security
       PUBLISH_SECURITY_ALERTS: false
-
-      IQ_URL: ${{ vars.IQ_URL }}
-      IQ_USERNAME: ${{ secrets.IQ_USERNAME }}
-      IQ_PASSWORD: ${{ secrets.IQ_PASSWORD }}
-      IQ_APP: "petclinic_gh"
-      IQ_STAGE: "build"
-      IQ_BUILD_OPTS: ""
-      #      IQ_BUILD_OPTS: "mvn dependency:copy-dependencies"
-      IQ_TARGET: "pom.xml"
-
-      SHA: "${{ github.run_id }}"
     steps:
       # Check out source code
       - name: Checkout repository
