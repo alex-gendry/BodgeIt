@@ -42,9 +42,9 @@ jobs:
           ssc_base_url: ${{ vars.FTFY_SSC_BASE_URL}}
           ssc_app: ${{ env.APPLICATION }}
           ssc_version: ${{ env.VERSION }}
-          ssc_ci_token: ${{ secrets.FTFY_CI_TOKEN_ENC }}
-          #          ssc_ci_username: ${{ secrets.FTFY_CI_USERNAME }}
-          #          ssc_ci_password:  ${{ secrets.FTFY_CI_PASSWORD }}
+#          ssc_ci_token: ${{ secrets.FTFY_CI_TOKEN_ENC }}
+          ssc_ci_username: ${{ secrets.FTFY_CI_USERNAME }}
+          ssc_ci_password:  ${{ secrets.FTFY_CI_PASSWORD }}
           sast_scan: true
           sast_client_auth_token: ${{ secrets.FTFY_SAST_CLIENT_TOKEN }}
           sast_build_options: "-bt none"
