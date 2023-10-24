@@ -1,0 +1,81 @@
+name: Fortify Security Scan
+on:
+  workflow_dispatch:
+  push:
+    #    # Master or main branch that you want to trigger this workflow for
+    branches:
+      - github/*
+  pull_request:
+  # The branches below must be a subset of the branches above
+
+jobs:
+  Fortify-SAST:
+    # Use the appropriate runner for building your source code
+    runs-on: self-hosted
+    container:
+      image: fortifydocker/fortify-ci-tools
+    permissions: write-all
+    env:
+      APPLICATION: "${{ github.event.repository.name }}"
+      VERSION: "${{ github.ref_name }}"
+
+      # Requires GitHub Advanced Security
+      PUBLISH_SECURITY_ALERTS: false
+
+      IQ_URL: ${{ vars.IQ_URL }}
+      IQ_USERNAME: ${{ secrets.IQ_USERNAME }}
+      IQ_PASSWORD: ${{ secrets.IQ_PASSWORD }}
+      IQ_APP: "petclinic_gh"
+      IQ_STAGE: "build"
+      IQ_BUILD_OPTS: ""
+      #      IQ_BUILD_OPTS: "mvn dependency:copy-dependencies"
+      IQ_TARGET: "pom.xml"
+
+      SHA: "${{ github.run_id }}"
+    steps:
+      # Check out source code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up Fortify ScanCentral Client
+      - name: Download Fortify Clients
+        uses: fortify-ps/github-action/setup@main
+        with:
+          fcli: latest
+          sc-client: latest
+
+      # Run SAST Scan
+      - name: Fortify SAST Scan
+        id: fortify-sast-step-id
+        uses: alex-gendry/gha-fortify-sast-scan@main
+        env:
+          FCLI_DEFAULT_TOKEN_EXPIRE: "1h"
+        with:
+          ssc_base_url: ${{ vars.FTFY_SSC_BASE_URL}}
+          ssc_app: ${{ env.APPLICATION }}
+          ssc_version: ${{ env.VERSION }}
+          ssc_ci_token: ${{ secrets.FTFY_CI_TOKEN_ENC }}
+          #          ssc_ci_username: ${{ secrets.FTFY_CI_USERNAME }}
+          #          ssc_ci_password:  ${{ secrets.FTFY_CI_PASSWORD }}
+          sast_scan: true
+          sast_client_auth_token: ${{ secrets.FTFY_SAST_CLIENT_TOKEN }}
+          sast_build_options: "-bt none"
+          security_gate_action: warn
+          security_gate_filterset: Critical & High
+          #          summary_filterset: Critical & High
+          gha_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Export Fortify vulnerability data
+        if: ${{ env.PUBLISH_SECURITY_ALERTS == 'true' }}
+        uses: fortify/gha-export-vulnerabilities@v1.0.0
+        with:
+          ssc_base_url: ${FTFY_SSC_URL}
+          ssc_auth_token: ${FTFY_CI_TOKEN_DEC}
+          ssc_version_name: "${APPLICATION}:${VERSION}"
+
+      # Import Fortify SAST results to GitHub Security Code Scanning
+      - name: Import Results
+        if: ${{ env.PUBLISH_SECURITY_ALERTS == 'true' }}
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: ./gh-fortify-sast.sarif
