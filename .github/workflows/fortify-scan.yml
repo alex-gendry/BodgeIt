@@ -43,6 +43,7 @@ jobs:
           ssc_app: ${{ env.APPLICATION }}
           ssc_version: ${{ env.VERSION }}
           ssc_source_version: "github/main"
+          copy_vulns: true
 #          ssc_ci_token: ${{ secrets.FTFY_CI_TOKEN_ENC }}
           ssc_ci_username: ${{ secrets.FTFY_CI_USERNAME }}
           ssc_ci_password:  ${{ secrets.FTFY_CI_PASSWORD }}
