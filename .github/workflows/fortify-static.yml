@@ -50,7 +50,7 @@ jobs:
         uses: agendry-pub/gha-ssc-create-application-version@v1
         with:
           ssc_base_url: ${{ vars.FTFY_SSC_BASE_URL}}
-          ssc_ci_token: ${{ secrets.FTFY_SSC_CI_TOKEN_ENC }}
+          ssc_ci_token: ${{ secrets.FTFY_CI_TOKEN_ENC }}
           ssc_app: ${{ env.APPLICATION }}
           ssc_version: ${{ env.VERSION }}
           ssc_version_attributes: |
@@ -64,7 +64,7 @@ jobs:
           scancentral package $BUILD_OPTS -o package.zip
       
       - name: Login to SC SAST
-        run:  fcli sc-sast session login --ssc-url $FTFY_SSC_BASE_URL -t $FTFY_SSC_CI_TOKEN_ENC -c $FTFY_SC_CLIENT_AUTH_TOKEN
+        run:  fcli sc-sast session login --ssc-url $FTFY_SSC_BASE_URL -t $FTFY_CI_TOKEN_ENC -c $FTFY_CI_TOKEN_ENC
 
       # Run Scan
       - name: Run Scan
