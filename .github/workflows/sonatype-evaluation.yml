@@ -10,13 +10,13 @@ jobs:
       IQ_TOKEN: ${{ secrets.IQ_TOKEN }}
       IQ_USERNAME: ${{ secrets.IQ_USERNAME }}
       IQ_PASSWORD: ${{ secrets.IQ_PASSWORD }}
-      IQ_APP: "${{ github.event.repository.name }}"
-      IQ_STAGE: "build"
-      IQ_TARGET: "lib"
+      IQ_APP: ${{ github.event.repository.name }}
+      IQ_STAGE: build
+      IQ_TARGET: lib
       FTFY_SSC_BASE_URL: ${{ vars.FTFY_SSC_BASE_URL }}
       FTFY_CI_TOKEN_ENC: ${{ secrets.FTFY_CI_TOKEN_ENC }}
-      APPLICATION: "${{ github.event.repository.name }}"
-      VERSION: "${{ github.ref_name }}"
+      APPLICATION: ${{ github.event.repository.name }}
+      VERSION: ${{ github.ref_name }}
       
       
     steps:
