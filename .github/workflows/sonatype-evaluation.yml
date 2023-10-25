@@ -6,16 +6,21 @@ jobs:
   nexus-iq-scan:
     runs-on: ubuntu-latest
     env:
-      IQ_URL: ${{ secrets.IQ_URL }}
+      IQ_URL: ${{ vars.IQ_URL }}
       IQ_TOKEN: ${{ secrets.IQ_TOKEN }}
       IQ_USERNAME: ${{ secrets.IQ_USERNAME }}
       IQ_PASSWORD: ${{ secrets.IQ_PASSWORD }}
-      IQ_APP: "petclinic"
+      IQ_APP: "${{ github.event.repository.name }}"
       IQ_STAGE: "build"
       IQ_TARGET: "lib"
+      FTFY_SSC_BASE_URL: ${{ vars.FTFY_SSC_BASE_URL }}
+      FTFY_CI_TOKEN_ENC: ${{ secrets.FTFY_CI_TOKEN_ENC }}
+      APPLICATION: "${{ github.event.repository.name }}"
+      VERSION: "${{ github.ref_name }}"
+      
       
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
     
     - name: Set up JDK 1.8
       uses: actions/setup-java@v1
@@ -31,3 +36,9 @@ jobs:
         applicationId: ${{ env.IQ_APP }}
         stage: ${{ env.IQ_STAGE }}
         target: ${{ env.IQ_TARGET }}
+
+    - name: IQ - SSC Synchronization
+      run: |
+        wget -qO- https://gitlab.ekseed.org/fortify/nexus-iq-integration/-/releases/permalink/latest/downloads/binaries/nexus-iq-integration | jar xvf /dev/stdin
+        chmod +x nexus-iq-integration
+        ./nexus-iq-integration -iqurl "${IQ_URL}"  -iquser "${IQ_USERNAME}" -iqpassword "${IQ_PASSWORD}" -iqproject "${IQ_APP}" -iqstage "${IQ_STAGE}" -sscurl "${FTFY_SSC_BASE_URL}" -ssctoken "${FTFY_CI_TOKEN_ENC}" -sscapp "${APPLICATION}" -sscversion ${VERSION}
