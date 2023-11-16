@@ -11,7 +11,7 @@ on:
 jobs:
   Fortify-SAST:
     # Use the appropriate runner for building your source code
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     container:
       image: fortifydocker/fortify-ci-tools
     permissions: write-all
@@ -25,12 +25,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Set up Fortify ScanCentral Client
-      - name: Download Fortify Clients
-        uses: fortify-ps/github-action/setup@main
-        with:
-          fcli: latest
-          sc-client: latest
+      # # Set up Fortify ScanCentral Client
+      # - name: Download Fortify Clients
+      #   uses: fortify-ps/github-action/setup@main
+      #   with:
+      #     fcli: latest
+      #     sc-client: latest
 
       # Run SAST Scan
       - name: Fortify SAST Scan
