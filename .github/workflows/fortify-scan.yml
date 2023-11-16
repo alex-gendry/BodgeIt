@@ -35,7 +35,7 @@ jobs:
       # Run SAST Scan
       - name: Fortify SAST Scan
         id: fortify-sast-step-id
-        uses: alex-gendry/gha-fortify-sast-scan@main
+        uses: agendry-pub/gha-ssc-ast-scan@main
         env:
           FCLI_DEFAULT_TOKEN_EXPIRE: "1h"
         with:
