@@ -1,0 +1,38 @@
+name: GitHub Action dev
+on:
+  workflow_dispatch:
+  push:
+#    # Master or main branch that you want to trigger this workflow for
+   branches:
+     - master
+     - github/*
+  pull_request:
+    # The branches below must be a subset of the branches above
+
+jobs:
+  Fortif-SAST:
+    runs-on: self-hosted
+    container:
+      image: maven
+    permissions: write-all
+    # env:
+      # APPLICATION: "${{ github.event.repository.name }}"
+      # VERSION: "${{ github.ref_name }}"
+
+      # Requires GitHub Advanced Security
+      # PUBLISH_SECURITY_ALERTS: false
+    steps:
+      - run: env
+        shell: bash
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+      - name: Run ScanCentral SAST Scan
+        uses: alex-gendry/github-action/sc-sast-scan@feat/create-app-version
+        with:
+          sast-scan: true
+        env:
+          SSC_URL: ${{vars.FTFY_SSC_BASE_URL}}
+          SSC_TOKEN: ${{secrets.FTFY_CI_TOKEN_ENC}}
+          SC_SAST_TOKEN: ${{secrets.FTFY_SAST_CLIENT_TOKEN}}
+          DO_WAIT: true
