@@ -46,8 +46,7 @@ jobs:
     permissions: write-all
     steps:
       - run: |
-          pwd
-          ls -al
-          ./fcli --version
+          echo $PATH
+          fcli --version
         shell: bash
     
