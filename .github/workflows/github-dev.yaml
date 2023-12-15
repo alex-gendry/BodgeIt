@@ -45,6 +45,9 @@ jobs:
          password: ${{  secrets.REGISTRY_PASSWORD }}
     permissions: write-all
     steps:
-      - run: ./fcli --version
+      - run: |
+          pwd
+          ls -al
+          ./fcli --version
         shell: bash
     
