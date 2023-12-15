@@ -46,7 +46,6 @@ jobs:
     permissions: write-all
     steps:
       - run: |
-          echo $PATH
-          fcli --version
+          fcli ssc summary generate >> $GITHUB_STEP_SUMMARY
         shell: bash
     
