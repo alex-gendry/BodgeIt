@@ -40,6 +40,9 @@ jobs:
     runs-on: self-hosted
     container:
       image: docker.prod.ekseed.org/fcli:dev
+      credentials:
+         username: ${{  secrets.REGISTRY_USERNAME }}
+         password: ${{  secrets.REGISTRY_PASSWORD }}
     permissions: write-all
     steps:
       - run: ./fcli --version
