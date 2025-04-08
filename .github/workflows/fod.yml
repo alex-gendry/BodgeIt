@@ -22,6 +22,7 @@ name: Fortify on Demand Scan
 on:
   workflow_dispatch:
   pull_request:
+  push:
 
 
 jobs:
