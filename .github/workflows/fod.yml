@@ -1,0 +1,74 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+################################################################################################################################################
+# Fortify lets you build secure software fast with an appsec platform that automates testing throughout the DevSecOps pipeline. Fortify static,#
+# dynamic, interactive, and runtime security testing is available on premises or as a service. To learn more about Fortify, start a free trial #
+# or contact our sales team, visit microfocus.com/appsecurity.                                                                                 #
+#                                                                                                                                              #
+# Use this workflow template as a basis for integrating Fortify on Demand Static Application Security Testing(SAST) into your GitHub workflows.#
+# This template demonstrates the steps to prepare the code+dependencies, initiate a scan, download results once complete and import into       #
+# GitHub Security Code Scanning Alerts. Existing customers should review inputs and environment variables below to configure scanning against  #
+# an existing application in your Fortify on Demand tenant. Additional information is available in the comments throughout the workflow, the   #
+# documentation for the Fortify actions used, and the Fortify on Demand / ScanCentral Client product documentation. If you need additional     #
+# assistance with configuration, feel free to create a help ticket in the Fortify on Demand portal.                                            #
+################################################################################################################################################
+
+name: Fortify on Demand Scan
+
+# TODO: Customize trigger events based on your DevSecOps processes and typical FoD SAST scan time
+on:
+  workflow_dispatch:
+  pull_request:
+
+
+jobs:
+  FoD-SAST-Scan:
+    # Use the appropriate runner for building your source code.
+    # TODO: Use a Windows runner for .NET projects that use msbuild. Additional changes to RUN commands will be required to switch to Windows syntax.
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+      - name: Run Fortify on Demand SAST & SCA Scan
+        uses: fortify/github-action@v1
+        with:
+          sast-scan: true
+          debricked-sca-scan: true
+        env:
+          FOD_URL: ${{secrets.FOD_EMEA_URL}}
+          FOD_TENANT: ${{secrets.FOD_EMEA_TENANT}}
+          # FOD_USER: ${{secrets.FOD_USER}}
+          # FOD_PASSWORD: ${{secrets.FOD_PAT}}
+          FOD_CLIENT_ID: ${{secrets.FOD_EMEA_CLIENT_ID}}
+          FOD_CLIENT_SECRET: ${{secrets.FOD_EMEA_CLIENT_SECRET}}
+          # FOD_LOGIN_EXTRA_OPTS: --socket-timeout=60s
+          FOD_RELEASE: vuln-apps/bodgeit:${{ github.ref_name }}
+          DO_SETUP: true
+          # SETUP_ACTION: https://scm.my.org/shared-repos/fcli-actions/setup.yaml
+          SETUP_EXTRA_OPTS: --use-aviator
+          # SC_CLIENT_VERSION: 24.2
+          # DO_PACKAGE_DEBUG: true
+          # PACKAGE_EXTRA_OPTS: -oss -bt mvn
+          # FOD_SAST_SCAN_EXTRA_OPTS:
+          DO_WAIT: true
+          DO_POLICY_CHECK: true
+          # POLICY_CHECK_ACTION: https://scm.my.org/shared-repos/fcli-actions/check-policy.yaml
+          # POLICY_CHECK_EXTRA_OPTS: --on-unsigned=ignore
+          DO_JOB_SUMMARY: true
+          # JOB_SUMMARY_ACTION: https://scm.my.org/shared-repos/fcli-actions/job-summary.yaml
+          # JOB_SUMMARY_EXTRA_OPTS: --on-unsigned=ignore
+          # DO_PR_COMMENT: true
+          # PR_COMMENT_ACTION: https://scm.my.org/shared-repos/fcli-actions/github-pr-comment.yaml
+          # PR_COMMENT_EXTRA_OPTS: --on-unsigned=ignore
+          DO_EXPORT: true
+          # EXPORT_ACTION: https://scm.my.org/shared-repos/fcli-actions/github-sast-report.yaml
+          # EXPORT_EXTRA_OPTS: --on-unsigned=ignore
+          # TOOL_DEFINITIONS: https://ftfy.mycompany.com/tool-definitions/v1/tool-definitions.yaml.zip
