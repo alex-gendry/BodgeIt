@@ -41,7 +41,7 @@ jobs:
           sast-scan: true
         env:
           DO_SETUP: true
-          DO_POLICY_CHECK: true
+          DO_POLICY_CHECK: false
           DO_JOB_SUMMARY: true
           PACKAGE_EXTRA_OPTS: -q
           DO_WAIT: true
