@@ -45,6 +45,7 @@ jobs:
           DO_JOB_SUMMARY: true
           PACKAGE_EXTRA_OPTS: -q
           DO_WAIT: true
+          DO_EXPORT: true
           SSC_APPVERSION: ${{ env.SSC_APPLICATION }}:${{ env.SSC_VERSION }}
 
   Fortify-SCA:
