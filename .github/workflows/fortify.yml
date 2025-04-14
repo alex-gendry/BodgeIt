@@ -109,5 +109,5 @@ jobs:
           fcli ssc session login --url ${{ env.SSC_URL }} -t ${{ env.SSC_TOKEN }}
           
           # DAST Scan
-          fcli sc-dast scan start --settings=${{ env.SCDAST_SETTINGS }}  --name="${{ env.SSC_APPVERSION }} - ${{ env.SHA }}" --store dastscan
+          fcli sc-dast scan start --settings=${{ env.SCDAST_SETTINGS }}  --name="${{ env.SSC_APPLICATION }}:${{ env.SSC_VERSION }} - ${{ env.SHA }}" --store dastscan
           fcli sc-dast scan wait-for '::dastscan::'  -i 30s
