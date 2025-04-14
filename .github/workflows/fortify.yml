@@ -10,12 +10,9 @@ env:
   SHA: "${{ github.run_id }}"
   SSC_URL: ${{secrets.FTFY_SSC_URL}}
   SSC_TOKEN: ${{secrets.FTFY_CI_TOKEN_ENC}}
-  # SSC_LOGIN_EXTRA_OPTS: --socket-timeout=60s
   SC_SAST_TOKEN: ${{secrets.FTFY_SC_CLIENT_AUTH_TOKEN}}
   SC_SAST_SENSOR_VERSION: 24.4
-  # SC_SAST_LOGIN_EXTRA_OPTS: --socket-timeout=60s
-
-  SCDAST_SETTINGS: adf3e0e3-c568-4235-b919-9eb5184855ab
+  SCDAST_SETTINGS: e0986201-60ad-4b66-9201-c1eda86b6510
 
   IQ_URL: ${{ secrets.IQ_URL }}
   IQ_USERNAME: ${{ secrets.IQ_USERNAME }}
@@ -85,7 +82,7 @@ jobs:
           scan-id: ${{ steps.evaluate.outputs.scan-id }}
           sbom-standard: cyclonedx
           sbom-format: json
-          artifact-name: lifecycle-app-sbom.json
+          artifact-name: lifecycle-app-sbom
           push-dependency-graph: true
       - name: Run SSC-IQ Integration
         run: |
