@@ -23,8 +23,7 @@ env:
   IQ_APP: "petclinic_gh"
   IQ_STAGE: "build"
   IQ_BUILD_OPTS: ""
-  #      IQ_BUILD_OPTS: "mvn dependency:copy-dependencies"
-  IQ_TARGET: "pom.xml"
+  IQ_TARGET: "."
 
 jobs:
   Fortify-SAST:
