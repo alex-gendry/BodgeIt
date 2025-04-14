@@ -82,7 +82,7 @@ jobs:
           scan-id: ${{ steps.evaluate.outputs.scan-id }}
           sbom-standard: cyclonedx
           sbom-format: json
-          artifact-name: lifecycle-app-sbom
+          artifact-name: scaresult
           push-dependency-graph: true
       - name: Run SSC-IQ Integration
         run: |
