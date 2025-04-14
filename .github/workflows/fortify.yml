@@ -17,7 +17,7 @@ env:
   IQ_URL: ${{ secrets.IQ_URL }}
   IQ_USERNAME: ${{ secrets.IQ_USERNAME }}
   IQ_PASSWORD: ${{ secrets.IQ_PASSWORD }}
-  IQ_APP: "petclinic_gh"
+  IQ_APP: "bodgeit_gh"
   IQ_STAGE: "build"
   IQ_BUILD_OPTS: ""
   IQ_TARGET: "."
