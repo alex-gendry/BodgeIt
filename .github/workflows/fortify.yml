@@ -1,0 +1,116 @@
+name: Fortify Security Scan
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+env:
+  SSC_APPLICATION: "vuln-apps/bodgeit"
+  SSC_VERSION: ${{ github.ref_name }}
+  SHA: "${{ github.run_id }}"
+  SSC_URL: ${{secrets.FTFY_SSC_URL}}
+  SSC_TOKEN: ${{secrets.FTFY_CI_TOKEN_ENC}}
+  # SSC_LOGIN_EXTRA_OPTS: --socket-timeout=60s
+  SC_SAST_TOKEN: ${{secrets.FTFY_SC_CLIENT_AUTH_TOKEN}}
+  SC_SAST_SENSOR_VERSION: 24.4
+  # SC_SAST_LOGIN_EXTRA_OPTS: --socket-timeout=60s
+
+  SCDAST_SETTINGS: adf3e0e3-c568-4235-b919-9eb5184855ab
+
+  IQ_URL: ${{ secrets.IQ_URL }}
+  IQ_USERNAME: ${{ secrets.IQ_USERNAME }}
+  IQ_PASSWORD: ${{ secrets.IQ_PASSWORD }}
+  IQ_APP: "petclinic_gh"
+  IQ_STAGE: "build"
+  IQ_BUILD_OPTS: ""
+  #      IQ_BUILD_OPTS: "mvn dependency:copy-dependencies"
+  IQ_TARGET: "pom.xml"
+
+jobs:
+  Fortify-SAST:
+    # Use the appropriate runner for building your source code
+    runs-on: ubuntu-latest
+    permissions:
+      # required for all workflows
+      security-events: write
+      # only required for workflows in private repositories
+      actions: read
+      contents: read
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+      - name: Run ScanCentral SAST Scan
+        uses: fortify/github-action/sc-sast-scan@v1
+        with:
+          sast-scan: true
+        env:
+          DO_SETUP: true
+          DO_POLICY_CHECK: true
+          DO_JOB_SUMMARY: true
+          PACKAGE_EXTRA_OPTS: -q
+          DO_WAIT: true
+          SSC_APPVERSION: ${{ env.SSC_APPLICATION }}:${{ env.SSC_VERSION }}
+
+  Fortify-SCA:
+    runs-on: ubuntu-latest
+    steps:
+      # some steps are omitted...
+      # Check out your code
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+      # Perform an evaluation
+      - name: Run evaluate action
+        id: evaluate
+        uses: sonatype/actions/evaluate@v1
+        with:
+          iq-server-url: ${{ env.IQ_URL }}
+          username: ${{ env.IQ_USERNAME }}
+          password: ${{ env.IQ_PASSWORD }}
+          application-id: ${{ env.IQ_APP }}
+          scan-targets: ${{ env.IQ_TARGET }}
+          stage: ${{ env.IQ_STAGE }}
+          upload-sarif-file: true
+      #          enable-callflow: true
+      - name: Log evaluate action output
+        run: echo "${{ steps.evaluate.outputs.scan-id }} ${{ steps.evaluate.outputs.report-url }}"
+      # Fetch the SBOM file associated with the evaluation
+      - name: Fetch SBOM
+        uses: sonatype/actions/fetch-sbom@v1
+        if: ( success() || failure() ) && steps.evaluate.outputs.scan-id
+        with:
+          iq-server-url: ${{ env.IQ_URL }}
+          username: ${{ env.IQ_USERNAME }}
+          password: ${{ env.IQ_PASSWORD }}
+          application-id: ${{ env.IQ_APP }}
+          scan-id: ${{ steps.evaluate.outputs.scan-id }}
+          sbom-standard: cyclonedx
+          sbom-format: json
+          artifact-name: lifecycle-app-sbom.json
+          push-dependency-graph: true
+      - name: Run SSC-IQ Integration
+        run: |
+          wget -qO- https://gitlab.ekseed.org/fortify/nexus-iq-integration/-/releases/permalink/latest/downloads/binaries/nexus-iq-integration -O nexus-iq-integration.zip 
+          unzip nexus-iq-integration.zip -d /usr/local/bin/
+          
+          nexus-iq-integration -iqurl ${{ env.IQ_URL }} -iquser ${{ env.IQ_USERNAME }} -iqpassword ${{ env.IQ_PASSWORD }} -iqproject ${{ env.IQ_APP }} -iqstage ${{ env.IQ_STAGE }} -sscurl ${{ env.SSC_URL }} -ssctoken ${{ env.SSC_TOKEN }} -sscapp ${{ env.SSC_APPLICATION }} -sscversion ${{ env.SSC_VERSION }}
+
+
+  Fortify-DAST:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+      - name: Setup FCLI
+        uses: fortify/github-action/setup@v1
+        with:
+          export-path: true
+          fcli: latest
+      - name: Run ScanCentral DAST Scan
+        run: |
+          # Login
+          fcli ssc session login --url ${{ env.SSC_URL }} -t ${{ env.SSC_TOKEN }}
+          
+          # DAST Scan
+          fcli sc-dast scan start --settings=${{ env.SCDAST_SETTINGS }}  --name="${{ env.SSC_APPVERSION }} - ${{ env.SHA }}" --store dastscan
+          fcli sc-dast scan wait-for '::dastscan::'  -i 30s
