@@ -8,13 +8,13 @@ env:
   SSC_APPLICATION: "vuln-apps/bodgeit"
   SSC_VERSION: ${{ github.ref_name }}
   SHA: "${{ github.run_id }}"
-  SSC_URL: ${{secrets.FTFY_SSC_URL}}
+  SSC_URL: "https://fortify.prod.ekseed.org"
   SSC_TOKEN: ${{secrets.FTFY_CI_TOKEN_ENC}}
   SC_SAST_TOKEN: ${{secrets.FTFY_SC_CLIENT_AUTH_TOKEN}}
   SC_SAST_SENSOR_VERSION: 24.4
   SCDAST_SETTINGS: e0986201-60ad-4b66-9201-c1eda86b6510
 
-  IQ_URL: ${{ secrets.IQ_URL }}
+  IQ_URL: "https://nxiq.prod.ekseed.org"
   IQ_USERNAME: ${{ secrets.IQ_USERNAME }}
   IQ_PASSWORD: ${{ secrets.IQ_PASSWORD }}
   IQ_APP: "bodgeit_gh"
