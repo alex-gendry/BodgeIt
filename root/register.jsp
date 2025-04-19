@@ -34,6 +34,10 @@ if (request.getMethod().equals("POST") && username != null) {
 			rs.next();
 			userid =  "" + rs.getInt("userid"); 
 
+ 			rs = stmt.executeQuery("SELECT * FROM Users WHERE (name = '" + username + "' AND password = '" + password1 + "')");
+			rs.next();
+			userid =  "" + rs.getInt("userid"); 
+
 			session.setAttribute("username", username);
 			session.setAttribute("usertype", "USER");
 			session.setAttribute("userid", userid);
